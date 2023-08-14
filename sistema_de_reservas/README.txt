@@ -4,7 +4,7 @@ O sistema fará o cadastro de novos membros, recuperação de senhas, e armazena
 Dentro do sistema será possível agendar, cancelar e consultar reservas por parte do usuário
 Dentro do sistema será possível gerenciar reservas, horários e serviços por parte dos administradores
 
-Os administradores acessarão o sistema através de um login e senha únicos e cada ação tanto dos administradores quanto dos usuários irá gerar um log que
+Os administradores acessarão o sistema através de um login e senha únicos (admin123, por exemplo) e cada ação tanto dos administradores quanto dos usuários irá gerar um log que
 ficará salvo no próprio sistema ou salvará em um arquivo .txt
 
 O sistema irá armazenar:

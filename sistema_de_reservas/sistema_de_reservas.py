@@ -77,6 +77,26 @@ def opcoes_usuario():
 def meu_perfil():
     return render_template('meu_perfil.html')
 
+@app.route('/logado_admin')
+def logado_admin():
+    return render_template('logado_admin.html')
+
+@app.route('/gerenciar_cliente')
+def gerenciar_cliente():
+    return render_template('gerenciar_cliente.html')
+
+@app.route('/gerenciar_servico')
+def gerenciar_servico():
+    return render_template('gerenciar_servico.html')
+
+@app.route('/gerenciar_horario')
+def gerenciar_horario():
+    return render_template('gerenciar_horario.html')
+
+@app.route('/gerenciar_reserva')
+def gerenciar_reserva():
+    return render_template('gerenciar_reserva.html')
+
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
 
