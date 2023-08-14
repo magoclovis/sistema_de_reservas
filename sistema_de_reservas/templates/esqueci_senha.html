@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recuperação de senha</title>
+    <style>
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Informe seu email</h1>
+
+    <!-- Use um formulário fictício para a recuperacao de senha -->
+    <form method="POST" action="/fazer_cadastro">
+        <br>
+        <label for="email">E-mail:</label>
+        <input type="email" name="email" required>
+        <br>
+        <button type="submit">Recuperar Senha</button>
+    </form>
+</body>
+</html>
+
+{% include 'partials/footer.html' %}

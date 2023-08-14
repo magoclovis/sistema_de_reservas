@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bem vindo(a)!</title>
+    <style>
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form action="{{ url_for('fazer_reserva') }}" method="get">
+        <button>Fazer Reserva</button>
+    </form>
+
+    <form action="{{ url_for('editar_reserva') }}" method="get">
+    <button>Editar Reserva</button>
+    </form>
+
+    <form action="{{ url_for('cancelar_reserva') }}" method="get">
+    <button>Cancelar Reserva</button>
+    </form>
+
+    <form action="{{ url_for('opcoes_usuario') }}" method="get">
+    <button>Opções</button>
+    </form>
+
+    <form action="{{ url_for('meu_perfil') }}" method="get">
+    <button>Meu Perfil</button>
+    </form>
+
+</body>
+</html>
+
+{% include 'partials/footer.html' %}

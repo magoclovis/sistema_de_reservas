@@ -37,36 +37,45 @@ def utility_processor():
 # Rotas da aplicação
 @app.route('/')
 def index():
-    return render_template('index.html', clientes=clientes)
+    return render_template('index.html')
 
 @app.route('/fazer_cadastro', methods=['GET', 'POST'])
-def fazer_reserva():
+def fazer_cadastro():
     if request.method == 'POST':
-        # Obtenha dados do formulário
-        nome = request.form['nome']
-        email = request.form['email']
-        telefone = request.form['telefone']
-        servico_id = request.form['servico']
-
-        # Crie um novo cliente se ainda não existir
-        cliente = None
-        for c in clientes:
-            if c.email == email:
-                cliente = c
-                break
-        if cliente is None:
-            cliente = Cliente(nome=nome, email=email, telefone=telefone)
-            clientes.append(cliente)
-
-        # Agende a reserva
-        servico = servicos[int(servico_id)]
-        reserva = Reserva(cliente=cliente, servico=servico)
-        reservas.append(reserva)
-
-        flash('Cadastro feito com sucesso!', 'success')
+        # Processar os dados do formulário de cadastro aqui
+        
+        # Exemplo de cadastro fictício (somente para demonstração)
+        flash('Cadastro realizado com sucesso!', 'success')
         return redirect(url_for('index'))
+    return render_template('fazer_cadastro.html')
 
-    return render_template('fazer_cadastro.html', servicos=servicos)
+@app.route('/logado')
+def logado():
+    return render_template('logado.html')
+
+@app.route('/esqueci_senha')
+def esqueci_senha():
+    return render_template('esqueci_senha.html')
+
+@app.route('/fazer_reserva')
+def fazer_reserva():
+    return render_template('fazer_reserva.html')
+
+@app.route('/editar_reserva')
+def editar_reserva():
+    return render_template('editar_reserva.html')
+
+@app.route('/cancelar_reserva')
+def cancelar_reserva():
+    return render_template('cancelar_reserva.html')
+
+@app.route('/opcoes_usuario')
+def opcoes_usuario():
+    return render_template('opcoes_usuario.html')
+
+@app.route('/meu_perfil')
+def meu_perfil():
+    return render_template('meu_perfil.html')
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

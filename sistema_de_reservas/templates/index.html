@@ -2,11 +2,46 @@
 <html>
 <head>
     <title>Página de Login</title>
+    <style>
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Estilo para as mensagens de flash */
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .flash-messages li {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <h1>Bem-vindo ao Sistema de Reservas</h1>
     
-    <form>
+    <!-- Exibição das mensagens de flash -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    <form action="{{ url_for('logado') }}" method="get">
         <label for="login">Login:</label>
         <input type="text" id="login" name="login">
         <br>
@@ -16,7 +51,12 @@
         <button type="submit">Entrar</button>
     </form>
     
-    <button>Cadastrar</button>
+    <form action="{{ url_for('fazer_cadastro') }}" method="get">
+        <button type="submit">Cadastrar</button>
+    </form>
+    
     <button>Esqueci minha senha</button>
 </body>
 </html>
+
+{% include 'partials/footer.html' %}
