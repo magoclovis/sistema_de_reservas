@@ -1,18 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+import os
+import sqlite3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '123456'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'mydatabase.db')
+db = SQLAlchemy(app)
 
-# Defina classes para Cliente, Servico e Reserva aqui
-# Por enquanto, vamos usar dicionários para armazenar os dados
+class Usuario(db.Model):
+    __tablename__ = 'usuario'
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    login = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    senha = db.Column(db.String(100), nullable=False)
+    telefone = db.Column(db.String(15), nullable=False)
+    
 
 clientes = []
 servicos = ['teste_1', 'teste_2', 'teste_3', 'teste_4']
 reservas = []
 
 class Cliente:
-    def __init__(self, nome, email, telefone):
+    def __init__(self, nome, login, senha, email, telefone):
         self.nome = nome
+        self.login = login
+        self.senha = senha
         self.email = email
         self.telefone = telefone
 
@@ -42,9 +56,19 @@ def index():
 @app.route('/fazer_cadastro', methods=['GET', 'POST'])
 def fazer_cadastro():
     if request.method == 'POST':
-        # Processar os dados do formulário de cadastro aqui
-        
-        # Exemplo de cadastro fictício (somente para demonstração)
+        nome = request.form['nome']
+        login = request.form['login']
+        email = request.form['email']
+        senha = request.form['senha']
+        telefone = request.form['telefone']
+
+        # Crie uma nova instância do modelo Usuario
+        novo_usuario = Usuario(nome=nome, login=login, email=email, senha=senha, telefone=telefone)
+
+        # Adicione o novo usuário ao banco de dados
+        db.session.add(novo_usuario)
+        db.session.commit()
+
         flash('Cadastro realizado com sucesso!', 'success')
         return redirect(url_for('index'))
     return render_template('fazer_cadastro.html')
@@ -98,5 +122,7 @@ def gerenciar_reserva():
     return render_template('gerenciar_reserva.html')
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True, use_reloader=False)
 

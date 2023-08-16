@@ -26,4 +26,6 @@ Dentro do sistema ele irá apresentar:
 5. Botão para editar dados do perfil
 
 
-- Sistema feito em Flask utilizando Python, HTML e CSS
+- Sistema feito em Flask utilizando Python para o back-end
+- HTML e CSS para o front-end
+- Sqlite e DBeaver para o banco de dados
