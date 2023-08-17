@@ -28,4 +28,9 @@ Dentro do sistema ele irá apresentar:
 
 - Sistema feito em Flask utilizando Python para o back-end
 - HTML e CSS para o front-end
-- Sqlite e DBeaver para o banco de dados
+- Sqlite para criação do banco de dados e DBeaver para exibição e manipulação dos dados
+
+* Fazer com que apenas os dados dentro do banco de dados consigam fazer login - completo
+* Fazer com que o usuário consiga fazer reserva, cancelar reserva, editar e recuperar senha utilizando o e-mail
+* Criar login e senha para administradores
+* fazer com que os administradores consigam gerenciar os serviços, os horários, as reservas e os clientes

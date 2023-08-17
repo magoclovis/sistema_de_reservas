@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
+from flask_bcrypt import Bcrypt
 import os
 import sqlite3
 
@@ -8,15 +10,34 @@ app.config['SECRET_KEY'] = '123456'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'mydatabase.db')
 db = SQLAlchemy(app)
 
-class Usuario(db.Model):
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'index'  # Rota para redirecionar em caso de acesso não autorizado
+
+class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
     login = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    senha = db.Column(db.String(100), nullable=False)
-    telefone = db.Column(db.String(15), nullable=False)
-    
+    senha = db.Column(db.String(128), nullable=False)
+    telefone = db.Column(db.String(11), nullable=False)
+
+    def set_senha(self, senha):
+        self.senha = bcrypt.generate_password_hash(senha).decode('utf-8')
+
+    # método para verificar as credenciais do usuário
+    @classmethod
+    def verificar_credenciais(cls, login, senha):
+        usuario = cls.query.filter_by(login=login).first()
+        if usuario and bcrypt.check_password_hash(usuario.senha, senha):
+            return usuario
+        return None
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
+
 
 clientes = []
 servicos = ['teste_1', 'teste_2', 'teste_3', 'teste_4']
@@ -49,8 +70,26 @@ def utility_processor():
 
 
 # Rotas da aplicação
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('logado'))
+    
+    if request.method == 'POST':
+        login = request.form['login']
+        senha = request.form['senha']
+
+        if not login or not senha:
+            flash('Por favor, preencha todos os campos.', 'error')
+        else:
+            usuario = Usuario.verificar_credenciais(login, senha)
+            if usuario:
+                login_user(usuario)
+                flash('Login bem-sucedido!', 'success')
+                return redirect(url_for('logado'))
+            else:
+                flash('Credenciais inválidas. Tente novamente.', 'error')
+
     return render_template('index.html')
 
 @app.route('/fazer_cadastro', methods=['GET', 'POST'])
@@ -64,6 +103,9 @@ def fazer_cadastro():
 
         # Crie uma nova instância do modelo Usuario
         novo_usuario = Usuario(nome=nome, login=login, email=email, senha=senha, telefone=telefone)
+        novo_usuario.set_senha(senha)  # Chame o método para gerar o hash da senha
+        db.session.add(novo_usuario)
+        db.session.commit()
 
         # Adicione o novo usuário ao banco de dados
         db.session.add(novo_usuario)
@@ -73,7 +115,8 @@ def fazer_cadastro():
         return redirect(url_for('index'))
     return render_template('fazer_cadastro.html')
 
-@app.route('/logado')
+@app.route('/logado', methods=['GET'])
+@login_required
 def logado():
     return render_template('logado.html')
 
@@ -120,6 +163,13 @@ def gerenciar_horario():
 @app.route('/gerenciar_reserva')
 def gerenciar_reserva():
     return render_template('gerenciar_reserva.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout realizado com sucesso!', 'success')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():
