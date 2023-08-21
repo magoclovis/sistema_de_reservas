@@ -28,7 +28,7 @@
     </style>
 </head>
 <body>
-    <h1>Bem-vindo ao Sistema de Reservas</h1>
+    <h1>Login de administradores</h1>
     
     <!-- Exibição das mensagens de flash -->
     {% with messages = get_flashed_messages() %}
@@ -42,7 +42,7 @@
     {% endwith %}
     
     {% if not current_user.is_authenticated %}
-    <form action="{{ url_for('index') }}" method="post">
+    <form action="{{ url_for('index_admin') }}" method="post">
         <label for="login">Login:</label>
         <input type="text" id="login" name="login" required>
         <br>
@@ -51,20 +51,13 @@
         <br>
         <button type="submit">Entrar</button>
     </form>
-        
-    <form action="{{ url_for('fazer_cadastro') }}" method="get">
-        <button type="submit">Cadastrar</button>
-    </form>
+
 
 {% else %}
     <p>Olá, {{ current_user.nome }}!</p>
-    <a href="{{ url_for('logado') }}">Página logado</a>
+    <a href="{{ url_for('logado_admin') }}">Página logado</a>
 {% endif %}
-
-    <form action="{{ url_for('esqueci_senha') }}" method="get">
-        <button type="submit">Esqueci minha senha</button>
-    </form>
-
+    
 </body>
 </html>
 

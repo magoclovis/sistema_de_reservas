@@ -14,12 +14,32 @@
 </head>
 <h1>Fazer Reserva</h1>
 <body>
-    Teste
-
-    <form action="{{ url_for('logado') }}" method="get">
-        <button>Voltar</button>
-        </form>
-
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    <form action="{{ url_for('fazer_reserva') }}" method="post">
+        <label for="data">Data:</label>
+        <input type="date" id="data" name="data" required>
+        <br>
+        <label for="hora_inicio">Hora de Início:</label>
+        <input type="time" id="hora_inicio" name="hora_inicio" required>
+        <br>
+        <label for="servico">Serviço:</label>
+        <select id="servico" name="servico">
+            {% for servico in servicos %}
+                <option value="{{ servico }}">{{ servico }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit">Fazer Reserva</button>
+    </form>
 </body>
 </html>
 

@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 import os
 import sqlite3
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='C:\\Users\\joaov\\Downloads\\sistema_de_reservas\\templates')
 app.config['SECRET_KEY'] = '123456'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'mydatabase.db')
 db = SQLAlchemy(app)
@@ -22,6 +22,7 @@ class Usuario(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     senha = db.Column(db.String(128), nullable=False)
     telefone = db.Column(db.String(11), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False) 
 
     def set_senha(self, senha):
         self.senha = bcrypt.generate_password_hash(senha).decode('utf-8')
@@ -33,6 +34,16 @@ class Usuario(db.Model, UserMixin):
         if usuario and bcrypt.check_password_hash(usuario.senha, senha):
             return usuario
         return None
+    
+    is_admin = db.Column(db.Boolean, default=False)
+
+class ReservaDB(db.Model):
+    __tablename__ = 'reserva'
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    data = db.Column(db.String(10), nullable=False)
+    hora_inicio = db.Column(db.String(5), nullable=False)
+    servico = db.Column(db.String(100), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -57,9 +68,11 @@ class Servico:
         self.descricao = descricao
 
 class Reserva:
-    def __init__(self, cliente, servico):
+    def __init__(self, cliente, servico, data, hora_inicio):
         self.cliente = cliente
         self.servico = servico
+        self.data = data
+        self.hora_inicio = hora_inicio
 
 @app.context_processor
 def utility_processor():
@@ -124,9 +137,24 @@ def logado():
 def esqueci_senha():
     return render_template('esqueci_senha.html')
 
-@app.route('/fazer_reserva')
+@app.route('/fazer_reserva', methods=['GET', 'POST'])
+@login_required
 def fazer_reserva():
-    return render_template('fazer_reserva.html')
+    if request.method == 'POST':
+        data = request.form['data']
+        hora_inicio = request.form['hora_inicio']
+        servico = request.form['servico']
+        
+        # Criar uma nova reserva no banco de dados
+        nova_reserva = ReservaDB(usuario_id=current_user.id, data=data, hora_inicio=hora_inicio, servico=servico)
+        db.session.add(nova_reserva)
+        db.session.commit()
+        
+        flash('Reserva feita com sucesso!', 'success')
+        return redirect(url_for('logado'))  # Redirecione para a página logado
+
+    return render_template('fazer_reserva.html', servicos=servicos)
+
 
 @app.route('/editar_reserva')
 def editar_reserva():
@@ -144,6 +172,32 @@ def opcoes_usuario():
 def meu_perfil():
     return render_template('meu_perfil.html')
 
+@app.route('/index_admin', methods=['GET', 'POST'])
+def index_admin():
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return render_template('logado_admin.html')
+        else:
+            flash('Acesso negado. Você não é um administrador.', 'error')
+            return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        login = request.form['login']
+        senha = request.form['senha']
+
+        if not login or not senha:
+            flash('Por favor, preencha todos os campos.', 'error')
+        else:
+            usuario = Usuario.verificar_credenciais(login, senha)
+            if usuario and usuario.is_admin:
+                login_user(usuario)
+                flash('Login bem-sucedido como administrador!', 'success')
+                return redirect(url_for('logado_admin'))
+            else:
+                flash('Credenciais inválidas para administrador. Tente novamente.', 'error')
+
+    return render_template('index_admin.html')
+    
 @app.route('/logado_admin')
 def logado_admin():
     return render_template('logado_admin.html')

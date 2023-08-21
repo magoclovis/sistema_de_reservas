@@ -25,12 +25,17 @@ Dentro do sistema ele irá apresentar:
 4. Botão de Opções
 5. Botão para editar dados do perfil
 
+________________________________________________________________________________________________________________________________________________
+http://127.0.0.1:5000/ -> Para login dos usuários
+http://127.0.0.1:5000/index_admin -> Para login dos administradores
+________________________________________________________________________________________________________________________________________________
 
 - Sistema feito em Flask utilizando Python para o back-end
 - HTML e CSS para o front-end
 - Sqlite para criação do banco de dados e DBeaver para exibição e manipulação dos dados
 
 * Fazer com que apenas os dados dentro do banco de dados consigam fazer login - completo
+* Criar login e senha especifico para administradores - completo
+
 * Fazer com que o usuário consiga fazer reserva, cancelar reserva, editar e recuperar senha utilizando o e-mail
-* Criar login e senha para administradores
 * fazer com que os administradores consigam gerenciar os serviços, os horários, as reservas e os clientes
