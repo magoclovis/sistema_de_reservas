@@ -11,33 +11,34 @@
             border-radius: 5px;
         }
     </style>
-
-<h1>Bem vindo(a), {{ current_user.nome.split()[0] }}!</h1>
-
 </head>
 <body>
+    <h1>Bem vindo(a), {{ current_user.nome.split()[0] }}!</h1>
+
     <form action="{{ url_for('fazer_reserva') }}" method="get">
         <button>Fazer Reserva</button>
     </form>
 
-    <form action="{{ url_for('editar_reserva') }}" method="get">
-    <button>Editar Reserva</button>
-    </form>
+    {% for reserva in reservas %}
+        <form action="{{ url_for('editar_reserva', reserva_id=reserva.id) }}" method="get">
+            <button>Editar Reserva</button>
+        </form>
+    {% endfor %}
 
     <form action="{{ url_for('cancelar_reserva') }}" method="get">
-    <button>Cancelar Reserva</button>
+        <button>Cancelar Reserva</button>
     </form>
 
     <form action="{{ url_for('opcoes_usuario') }}" method="get">
-    <button>Opções</button>
+        <button>Opções</button>
     </form>
 
     <form action="{{ url_for('meu_perfil') }}" method="get">
-    <button>Meu Perfil</button>
+        <button>Meu Perfil</button>
     </form>
 
     <form action="{{ url_for('logout') }}" method="get">
-    <button>Sair</button>
+        <button>Sair</button>
     </form>
 
 </body>

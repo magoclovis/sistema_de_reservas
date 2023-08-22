@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerenciar Serviços</title>
+    <style>
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<h1>Gerenciar Serviços</h1>
+<{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <ul class="flash-messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endwith %}
+
+<form action="{{ url_for('gerenciar_servicos') }}" method="post">
+<h2>Adicionar Serviço</h2>
+<label for="nome">Nome do Serviço:</label>
+<input type="text" id="nome" name="nome" required>
+<br>
+<label for="descricao">Descrição do Serviço:</label>
+<textarea id="descricao" name="descricao" required></textarea>
+<br>
+<button type="submit">Adicionar Serviço</button>
+</form>
+
+<form action="{{ url_for('gerenciar_servicos') }}" method="post">
+<h2>Editar Serviço</h2>
+<select name="servico_id">
+    {% for servico in servicos %}
+        <option value="{{ servico.id }}">{{ servico.nome }}</option>
+    {% endfor %}
+</select>
+<br>
+<label for="novo_nome">Novo Nome:</label>
+<input type="text" id="novo_nome" name="novo_nome" required>
+<br>
+<label for="nova_descricao">Nova Descrição:</label>
+<textarea id="nova_descricao" name="nova_descricao" required></textarea>
+<br>
+<button type="submit">Editar Serviço</button>
+</form>
+
+<form action="{{ url_for('gerenciar_servicos') }}" method="post">
+<h2>Remover Serviço</h2>
+<select name="servico_id">
+    {% for servico in servicos %}
+        <option value="{{ servico.id }}">{{ servico.nome }}</option>
+    {% endfor %}
+</select>
+<br>
+<button type="submit">Remover Serviço</button>
+</form>
+
+<form action="{{ url_for('logado_admin') }}" method="get">
+<button>Voltar</button>
+</form>
+
+</body>
+</html>
+
+{% include 'partials/footer.html' %}

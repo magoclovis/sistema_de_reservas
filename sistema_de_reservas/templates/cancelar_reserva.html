@@ -12,13 +12,46 @@
         }
     </style>
 </head>
-<h1>Cancelar Reserva</h1>
 <body>
-    Teste
+    <h1>Cancelar Reserva</h1>
+
+    <!-- Exibição das mensagens de flash -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
     <form action="{{ url_for('logado') }}" method="get">
         <button>Voltar</button>
-        </form>
+    </form>
+
+    <form action="{{ url_for('cancelar_reserva') }}" method="post">
+        <h2>Suas Reservas:</h2>
+        {% if reservas_usuario %}
+            <ul>
+                {% for reserva in reservas_usuario %}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="reservas_a_cancelar" value="{{ reserva.id }}">
+                            {{ reserva.data }} - {{ reserva.hora_inicio }} - {{ reserva.servico }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button type="submit">Cancelar Reservas Selecionadas</button>
+        {% else %}
+            <p>Você não tem reservas para cancelar.</p>
+        {% endif %}
+    </form>
+
+    <form action="{{ url_for('logado') }}" method="get">
+        <button>Voltar</button>
+    </form>
 
 </body>
 </html>

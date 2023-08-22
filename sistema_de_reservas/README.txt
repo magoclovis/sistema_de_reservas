@@ -34,8 +34,9 @@ ________________________________________________________________________________
 - HTML e CSS para o front-end
 - Sqlite para criação do banco de dados e DBeaver para exibição e manipulação dos dados
 
-* Fazer com que apenas os dados dentro do banco de dados consigam fazer login - completo
-* Criar login e senha especifico para administradores - completo
 
-* Fazer com que o usuário consiga fazer reserva, cancelar reserva, editar e recuperar senha utilizando o e-mail
+ * Fazer com que toda ação do usuário (adicionar reserva, editar reserva, cancelar reserva e recuperar senha) seja salva e retorne como log para o usuário
+ * Caso um usuário tente fazer reserva em uma data que já foi reservada por outro usuário o sistema irá avisar o usuário atual que a data está indisponível
+ * Fazer com que cada tipo de serviço tenha um tempo para a conclusão do serviço, por exemplo se um cliente pediu o serviço_1 que demora 30 minutos e reservou as
+ 13 horas então o próximo horário livre será a partir de 13:30 em diante. Isso evitará reservas muito próximas.
 * fazer com que os administradores consigam gerenciar os serviços, os horários, as reservas e os clientes

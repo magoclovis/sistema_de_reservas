@@ -105,6 +105,7 @@ def index():
 
     return render_template('index.html')
 
+
 @app.route('/fazer_cadastro', methods=['GET', 'POST'])
 def fazer_cadastro():
     if request.method == 'POST':
@@ -128,14 +129,18 @@ def fazer_cadastro():
         return redirect(url_for('index'))
     return render_template('fazer_cadastro.html')
 
+
 @app.route('/logado', methods=['GET'])
 @login_required
 def logado():
-    return render_template('logado.html')
+    reservas = ReservaDB.query.filter_by(usuario_id=current_user.id).all()
+    return render_template('logado.html', reservas=reservas)
+
 
 @app.route('/esqueci_senha')
 def esqueci_senha():
     return render_template('esqueci_senha.html')
+
 
 @app.route('/fazer_reserva', methods=['GET', 'POST'])
 @login_required
@@ -156,13 +161,54 @@ def fazer_reserva():
     return render_template('fazer_reserva.html', servicos=servicos)
 
 
-@app.route('/editar_reserva')
+@app.route('/editar_reserva', methods=['GET', 'POST'])
+@login_required
 def editar_reserva():
-    return render_template('editar_reserva.html')
+    if request.method == 'POST':
+        reserva_id = int(request.form['reserva_id'])  # Obtém o ID da reserva selecionada
+        reserva = ReservaDB.query.get(reserva_id)
+        
+        if not reserva or reserva.usuario_id != current_user.id:
+            flash('Reserva não encontrada ou você não tem permissão para editá-la.', 'error')
+            return redirect(url_for('logado'))
 
-@app.route('/cancelar_reserva')
+        nova_data = request.form['nova_data']
+        nova_hora_inicio = request.form['nova_hora_inicio']
+
+        reserva.data = nova_data
+        reserva.hora_inicio = nova_hora_inicio
+        db.session.commit()
+        flash('Reserva atualizada com sucesso!', 'success')  # Mensagem de sucesso
+        return redirect(url_for('logado'))  # Redirecione para a página logado
+
+    reservas_usuario = ReservaDB.query.filter_by(usuario_id=current_user.id).all()
+    return render_template('editar_reserva.html', reservas=reservas_usuario)
+
+
+@app.route('/testar_url/<int:reserva_id>')
+def testar_url(reserva_id):
+    url = url_for('editar_reserva', reserva_id=reserva_id)
+    return f"A URL gerada para editar_reserva é: {url}"
+
+
+@app.route('/cancelar_reserva', methods=['GET', 'POST'])
+@login_required
 def cancelar_reserva():
-    return render_template('cancelar_reserva.html')
+    if request.method == 'POST':
+        reservas_a_cancelar = request.form.getlist('reservas_a_cancelar')
+
+        # Loop para cancelar as reservas selecionadas
+        for reserva_id in reservas_a_cancelar:
+            reserva = ReservaDB.query.get(reserva_id)
+            if reserva and reserva.usuario_id == current_user.id:
+                db.session.delete(reserva)
+        
+        db.session.commit()
+        flash('Reservas canceladas com sucesso!', 'success')  # Mensagem de sucesso
+        return redirect(url_for('logado'))  # Redirecione para a página logado
+
+    reservas_usuario = ReservaDB.query.filter_by(usuario_id=current_user.id).all()
+    return render_template('cancelar_reserva.html', reservas_usuario=reservas_usuario)
 
 @app.route('/opcoes_usuario')
 def opcoes_usuario():
@@ -202,17 +248,53 @@ def index_admin():
 def logado_admin():
     return render_template('logado_admin.html')
 
-@app.route('/gerenciar_cliente')
-def gerenciar_cliente():
-    return render_template('gerenciar_cliente.html')
+@app.route('/gerenciar_clientes', methods=['GET', 'POST'])
+@login_required  # Certifique-se de que apenas administradores possam acessar
+def gerenciar_clientes():
+    if not current_user.is_admin:
+        flash('Acesso negado. Você não é um administrador.', 'error')
+        return redirect(url_for('logado'))
 
-@app.route('/gerenciar_servico')
-def gerenciar_servico():
-    return render_template('gerenciar_servico.html')
+    if request.method == 'POST':
+        cliente_id = request.form.get('cliente_id')
+
+        if cliente_id:
+            cliente = Usuario.query.get(cliente_id)
+            if cliente:
+                # Exclua o cliente do banco de dados
+                db.session.delete(cliente)
+                db.session.commit()
+                flash('Cliente excluído com sucesso!', 'success')
+
+    clientes = Usuario.query.filter_by(is_admin=False).all()
+    return render_template('gerenciar_clientes.html', clientes=clientes)
+
+
+
+@app.route('/gerenciar_servicos', methods=['GET', 'POST'])
+@login_required  # Certifique-se de que apenas administradores possam acessar
+def gerenciar_servicos():
+    if not current_user.is_admin:
+        flash('Acesso negado. Você não é um administrador.', 'error')
+        return redirect(url_for('logado'))
+
+    if request.method == 'POST':
+        # Lógica para adicionar, editar ou remover serviços
+        # ... (implemente essa lógica)
+
+        flash('Operação realizada com sucesso!', 'success')
+
+    return render_template('gerenciar_servicos.html')
+
 
 @app.route('/gerenciar_horario')
 def gerenciar_horario():
     return render_template('gerenciar_horario.html')
+
+@app.route('/log')
+@login_required
+def log():
+    return render_template('log.html')
 
 @app.route('/gerenciar_reserva')
 def gerenciar_reserva():

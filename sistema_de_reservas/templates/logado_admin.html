@@ -23,13 +23,17 @@
     <button>Gerenciar Horários</button>
     </form>
 
-    <form action="{{ url_for('gerenciar_servico') }}" method="get">
+    <form action="{{ url_for('gerenciar_servicos') }}" method="get">
     <button>Gerenciar Serviços</button>
     </form>
 
-    <form action="{{ url_for('gerenciar_cliente') }}" method="get">
+    <form action="{{ url_for('gerenciar_clientes') }}" method="get">
     <button>Gerenciar Clientes</button>
     </form>
+
+    <form action="{{ url_for('log') }}" method="get">
+        <button>Log</button>
+        </form>
 
     <form action="{{ url_for('logout') }}" method="get">
     <button>Sair</button>

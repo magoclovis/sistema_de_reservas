@@ -38,8 +38,13 @@
             {% endfor %}
         </select>
         <br>
-        <button type="submit">Fazer Reserva</button>
+        <button type="submit">Fazer Reserva</button>       
     </form>
+
+    <form action="{{ url_for('logado') }}" method="get">
+        <button>Voltar</button>
+    </form>
+
 </body>
 </html>
 

@@ -12,14 +12,41 @@
         }
     </style>
 </head>
-<h1>Editar Reserva</h1>
 <body>
-    Teste
+    <h1>Editar Reserva</h1>
+
+    <!-- Exibição das mensagens de flash -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
     <form action="{{ url_for('logado') }}" method="get">
         <button>Voltar</button>
-        </form>
+    </form>
 
+    <form action="{{ url_for('editar_reserva') }}" method="post">
+        <h2>Selecione a Reserva para Editar:</h2>
+        <select name="reserva_id">
+            {% for reserva in reservas %}
+                <option value="{{ reserva.id }}">{{ reserva.data }} - {{ reserva.hora_inicio }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="nova_data">Nova Data:</label>
+        <input type="date" id="nova_data" name="nova_data" required>
+        <br>
+        <label for="nova_hora_inicio">Nova Hora de Início:</label>
+        <input type="time" id="nova_hora_inicio" name="nova_hora_inicio" required>
+        <br>
+        <button type="submit">Editar Reserva Selecionada</button>
+    </form>
+    
 </body>
 </html>
 

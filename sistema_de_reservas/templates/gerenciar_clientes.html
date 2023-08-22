@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerenciar Clientes</title>
+    <style>
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<h1>Gerenciar Clientes</h1>
+
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('logado_admin') }}" method="get">
+        <button>Voltar</button>
+    </form>
+
+    <form action="{{ url_for('gerenciar_clientes') }}" method="post">
+        <h2>Lista de Clientes</h2>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Ação</th>
+            </tr>
+            {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.nome }}</td>
+                    <td>{{ cliente.email }}</td>
+                    <td>{{ cliente.telefone }}</td>
+                    <td>
+                        <input type="radio" name="cliente_id" value="{{ cliente.id }}">
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Excluir Cliente Selecionado</button>
+    </form>
+
+</body>
+</html>
+
+{% include 'partials/footer.html' %}

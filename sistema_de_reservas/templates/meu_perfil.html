@@ -12,13 +12,16 @@
         }
     </style>
 </head>
-<h1>Meu Perfil</h1>
 <body>
-    teste
+    <h1>Meu Perfil</h1>
+    <p><strong>Nome Completo:</strong> {{ current_user.nome }}</p>
+    <p><strong>Data de Nascimento:</strong> {{ current_user.data_nascimento }}</p>
+    <p><strong>Email:</strong> {{ current_user.email }}</p>
+    <p><strong>Número de Telefone:</strong> {{ current_user.telefone }}</p>
 
     <form action="{{ url_for('logado') }}" method="get">
         <button>Voltar</button>
-        </form>
+    </form>
 
 </body>
 </html>
