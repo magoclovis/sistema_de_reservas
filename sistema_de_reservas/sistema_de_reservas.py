@@ -287,6 +287,7 @@ def gerenciar_servicos():
     return render_template('gerenciar_servicos.html')
 
 
+
 @app.route('/gerenciar_horario')
 def gerenciar_horario():
     return render_template('gerenciar_horario.html')
@@ -296,9 +297,21 @@ def gerenciar_horario():
 def log():
     return render_template('log.html')
 
-@app.route('/gerenciar_reserva')
-def gerenciar_reserva():
-    return render_template('gerenciar_reserva.html')
+@app.route('/gerenciar_reservas')
+def gerenciar_reservas():
+   reservas = ReservaDB.query.all()  # Busca todas as reservas no banco de dados
+   return render_template('gerenciar_reservas.html', reservas=reservas)
+
+
+
+@app.route('/excluir_reserva/<int:id>')
+def excluir_reserva(id):
+    reserva_a_excluir = Reserva.query.get(id)  # Buscar a reserva pelo ID
+    if reserva_a_excluir:
+        db.session.delete(reserva_a_excluir)  # Excluir a reserva do banco de dados
+        db.session.commit()  # Confirmar a operação de exclusão
+    return redirect(url_for('gerenciar_reservas'))
+
 
 @app.route('/logout')
 @login_required
@@ -306,6 +319,7 @@ def logout():
     logout_user()
     flash('Logout realizado com sucesso!', 'success')
     return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     with app.app_context():

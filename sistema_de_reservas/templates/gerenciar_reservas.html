@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerenciar Reservas</title>
+    <style>
+        /* Seu estilo aqui */
+    </style>
+</head>
+<body>
+    <h1>Gerenciar Reservas</h1>
+    
+    <!-- Lista de Reservas -->
+    <ul>
+        {% for reserva in reservas %}
+        <li>
+            <span>{{ reserva.nome }}</span>
+            <a href="{{ url_for('editar_reserva', id=reserva.id) }}">Editar</a>
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <form action="{{ url_for('logado_admin') }}" method="get">
+        <button>Voltar</button>
+    </form>
+</body>
+</html>

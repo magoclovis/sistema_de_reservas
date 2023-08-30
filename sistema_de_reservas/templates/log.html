@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log</title>
+    <style>
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<h1>Log</h1>
+<body>
+    Teste
+
+    <form action="{{ url_for('logado_admin') }}" method="get">
+        <button>Voltar</button>
+    </form>
+</body>
+</html>
+
+{% include 'partials/footer.html' %}
